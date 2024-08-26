@@ -7,11 +7,12 @@
                  [com.cognitect/transit-clj "1.0.333"]
                  [com.taoensso/nippy "3.4.2"]
                  [org.clojure/clojure "1.10.3"]]
+  :test-paths ["test"]
   :profiles {:dev
              {:dependencies [[org.cloboss/core "2.2.0-SNAPSHOT"]
                              [com.taoensso/nippy "3.4.2"]]}
-             :test
-             {:dependencies [[org.cloboss/core "2.2.0-SNAPSHOT"]
-                             [org.cloboss/caching "2.2.0-SNAPSHOT"]
-                             [top.atticboss/atticboss-caching "0.14.0-SNAPSHOT"]
-                             [org.cloboss/messaging "2.2.0-SNAPSHOT"]]}})
+             :test          [:profiles/test]
+             :profiles/test {:dependencies [[org.cloboss/core "2.2.0-SNAPSHOT"]
+                                            [org.cloboss/caching "2.2.0-SNAPSHOT"]
+                                            [top.atticboss/atticboss-caching "0.14.0-SNAPSHOT"]
+                                            [org.cloboss/messaging "2.2.0-SNAPSHOT"]]}})

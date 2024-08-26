@@ -18,37 +18,35 @@
   it uses buddy with chahcha"
   [{:keys [codec-name content-type type read-handlers write-handlers key32 iv8]
     :or   {codec-name :transit type :msgpack}}]
-  (let [content-type (or content-type (str "application/nippy+" (name codec-name)))]
+  (let [content-type (or content-type (str "application/nippy+" (name codec-name)))
+        nippy-conf   {:encryptor  nil
+                      :compressor nil}]
     (make-codec
       :name codec-name
       :content-type content-type
       :type :bytes
       :encode (fn [data]
-                (let [eng               (crypto/stream-cipher :chacha)
-                      _                 (crypto/init! eng {:key key32
-                                                           :iv  iv8
-                                                           :op  :encrypt})
-                      serialized-data   (nippy/freeze data {:encryptor  nil
-                                                            :compressor nil})
-                      cipher-bytes      (crypto/process-bytes! eng serialized-data)
+                (let [enc-eng           (crypto/stream-cipher :chacha)
+                      _                 (crypto/init! enc-eng {:key key32
+                                                               :iv  iv8
+                                                               :op  :encrypt})
+                      serialized-data   (nippy/freeze data nippy-conf)
+                      cipher-bytes      (crypto/process-bytes! enc-eng serialized-data)
                       serialized-packet (nippy/freeze {:iv          iv8
                                                        :cipher-data cipher-bytes}
-                                                      {:encryptor  nil
-                                                       :compressor nil})]
+                                                      nippy-conf)]
                   serialized-packet))
 
       :decode (fn [data]
                 (when data
-                  (let [{iv8 :iv, cipher-data :cipher-data} (nippy/thaw data {:encryptor  nil
-                                                                              :compressor nil})
-                        eng                                 (crypto/stream-cipher :chacha)
+                  (let [{iv8 :iv, cipher-data :cipher-data} (nippy/thaw data nippy-conf)
+                        dec-eng                             (crypto/stream-cipher :chacha)
                         eng-conf                            {:key key32
                                                              :iv  iv8
                                                              :op  :decrypt}
-                        _                                   (crypto/init! eng eng-conf)
-                        clear-data                          (crypto/process-bytes! eng cipher-data)
-                        orignal-data-structure              (nippy/thaw clear-data {:encryptor  nil
-                                                                                    :compressor nil})]
+                        _                                   (crypto/init! dec-eng eng-conf)
+                        clear-data                          (crypto/process-bytes! dec-eng cipher-data)
+                        orignal-data-structure              (nippy/thaw clear-data nippy-conf)]
                     orignal-data-structure))))))
 
 (defn register-attic-codec
