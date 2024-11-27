@@ -7,14 +7,14 @@
 * installation
 ** Leiningen
 #+BEGIN_SRC clojure
-  attic-codec "0.1.0-SNAPSHOT"
+  [attic-codec "0.1.0-SNAPSHOT"]
 #+END_SRC
 
 * building
 from the root of the project, run:
 
 #+begin_src sh
-lein install
+  lein install
 #+end_src
 
 * usage
