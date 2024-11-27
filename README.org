@@ -1,0 +1,28 @@
+#+TITLE:     attic-codec
+#+SUBTITLE:  extra codecs to be used with cloboss
+#+KEYWORDS:  clojure, cloboss
+#+LANGUAGE:  en
+
+
+* installation
+** Leiningen
+#+BEGIN_SRC clojure
+  attic-codec "0.1.0-SNAPSHOT"
+#+END_SRC
+
+* building
+from the root of the project, run:
+
+#+begin_src sh
+lein install
+#+end_src
+
+* usage
+
+#+BEGIN_SRC clojure
+  (:require [attic-codec.codecs.attic :refer [attic-codec register-attic-codec]])
+
+  (register-attic-codec :codec-name :my-codec
+                        :iv8 my-iv
+                        :key32 my-key)
+#+END_SRC

@@ -22,32 +22,32 @@
         nippy-conf   {:encryptor  nil
                       :compressor nil}]
     (make-codec
-      :name codec-name
-      :content-type content-type
-      :type :bytes
-      :encode (fn [data]
-                (let [enc-eng           (crypto/stream-cipher :chacha)
-                      _                 (crypto/init! enc-eng {:key key32
-                                                               :iv  iv8
-                                                               :op  :encrypt})
-                      serialized-data   (nippy/freeze data nippy-conf)
-                      cipher-bytes      (crypto/process-bytes! enc-eng serialized-data)
-                      serialized-packet (nippy/freeze {:iv          iv8
-                                                       :cipher-data cipher-bytes}
-                                                      nippy-conf)]
-                  serialized-packet))
+     :name codec-name
+     :content-type content-type
+     :type :bytes
+     :encode (fn [data]
+               (let [enc-eng           (crypto/stream-cipher :chacha)
+                     _                 (crypto/init! enc-eng {:key key32
+                                                              :iv  iv8
+                                                              :op  :encrypt})
+                     serialized-data   (nippy/freeze data nippy-conf)
+                     cipher-bytes      (crypto/process-bytes! enc-eng serialized-data)
+                     serialized-packet (nippy/freeze {:iv          iv8
+                                                      :cipher-data cipher-bytes}
+                                                     nippy-conf)]
+                 serialized-packet))
 
-      :decode (fn [data]
-                (when data
-                  (let [{iv8 :iv, cipher-data :cipher-data} (nippy/thaw data nippy-conf)
-                        dec-eng                             (crypto/stream-cipher :chacha)
-                        eng-conf                            {:key key32
-                                                             :iv  iv8
-                                                             :op  :decrypt}
-                        _                                   (crypto/init! dec-eng eng-conf)
-                        clear-data                          (crypto/process-bytes! dec-eng cipher-data)
-                        orignal-data-structure              (nippy/thaw clear-data nippy-conf)]
-                    orignal-data-structure))))))
+     :decode (fn [data]
+               (when data
+                 (let [{iv8 :iv, cipher-data :cipher-data} (nippy/thaw data nippy-conf)
+                       dec-eng                             (crypto/stream-cipher :chacha)
+                       eng-conf                            {:key key32
+                                                            :iv  iv8
+                                                            :op  :decrypt}
+                       _                                   (crypto/init! dec-eng eng-conf)
+                       clear-data                          (crypto/process-bytes! dec-eng cipher-data)
+                       orignal-data-structure              (nippy/thaw clear-data nippy-conf)]
+                   orignal-data-structure))))))
 
 (defn register-attic-codec
   "register attic codec"

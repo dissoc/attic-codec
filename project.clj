@@ -9,8 +9,7 @@
                  [org.clojure/clojure "1.10.3"]]
   :test-paths ["test"]
   :profiles {:dev
-             {:dependencies [[org.cloboss/core "2.2.0-SNAPSHOT"]
-                             [com.taoensso/nippy "3.4.2"]]}
+             {:dependencies [[org.cloboss/core "2.2.0-SNAPSHOT"]]}
              :test          [:profiles/test]
              :profiles/test {:dependencies [[org.cloboss/core "2.2.0-SNAPSHOT"]
                                             [org.cloboss/caching "2.2.0-SNAPSHOT"]
